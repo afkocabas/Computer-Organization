@@ -4,24 +4,28 @@
 
 _main:
 
-	li a0, 0						# File descriptor
+	li a0, 0							# File descriptor
 	
-	la, a0, prompter				# Load address of the prompter to a0	
-	jal ra, ecall_print_str			# print the prompter
+	get_valid_input:
+		la, a0, prompter				# Load address of the prompter to a0	
+		jal ra, ecall_print_str			# print the prompter
 	
-	jal ra, ecall_get_integer			# get number of numbers from the user
-								# a0 has the user input
-	mv a1, a0					# set arguments of get_array_elements
-	jal ra, get_array_elements		# get elements from the user as many as the input
+		jal ra, ecall_get_integer			# get number of numbers from the user
+		bge zero, a0 get_valid_input		# if  input is less than zero
+		j main_back
 	
-	jal ra, bubble_sort
+	main_back:								# a0 has the user input
+		mv a1, a0						# set arguments of get_array_elements
+		jal ra, get_array_elements			# get elements from the user as many as the input
 	
-	la a0, end_message			# print the final message
-	jal ra ecall_print_str			# call print ecall
+		jal ra, bubble_sort
 	
-	jal ra, print_array				# prints the array
+		la a0, end_message				# print the final message
+		jal ra ecall_print_str				# call print ecall
+	
+		jal ra, print_array					# prints the array
 
-	jal ra, ecall_exit				# Exit the program
+		jal ra, ecall_exit					# Exit the program
 	
 	
 
@@ -155,7 +159,7 @@ ecall_get_integer:
 	end_message: .asciz "Your sorted array: "
 	white_space: .asciz " "
 	next_line: .asciz " \n"
-	prompter: .asciz "How many integers are you going to enter?: "
+	prompter: .asciz "\nHow many integers are you going to enter? (# > 0): "
 	prompter_2: .asciz "Printing the array:\n"
 	.align 4
 	array: .word 
