@@ -7,9 +7,6 @@
 		# file descriptor strandart input output
 		li a0, 0
 		
-	
-		la a0, prompter
-		jal x1 print_function_from_ecall
 		
 		# call diamond function 
 		jal x1, diamond
@@ -30,18 +27,31 @@
 		ecall
 		jalr x0 0(x1)
 	
-	diamond: # diamong(int a1)
+	diamond: 	# diamond(int a1)
 		
-	
-		li a7,5
-		ecall
+		get_valid_input:
+			la a0, prompter
+			li a7, 4
+			ecall
+			
+			li a7,5
+			ecall  						# a0 has the user input
+			
+			bge zero, a0, get_valid_input	# if (input < 0) get input again
+			
+			mv t0, a0						# t0 = input
+			li t1, 2						# t1 = 2
+			rem t0, t0, t1					# t0 = 0 or 1
+			blt zero, t0, diamond_back		# 0 < t0 
+			j get_valid_input					
 		
-		mv a1, a0 # a1 = N input
+		diamond_back:
+		mv a1, a0 						# a1 = N input
 		
 		addi a4, a0, -1 
-		srli a4, a4, 1 # a4 = number of spaces		
+		srli a4, a4, 1 			# a4 = number of spaces		
 
-		addi a2, zero, 1 # a2 = 1 #number of stars
+		addi a2, zero, 1 		# a2 = 1 #number of stars
 		print_upper_diamond:
 			blt a1, a2, cont #  if input is less than number of stars, branch
 			add a3, a2, zero # a3 = a2 util value to print stars
@@ -106,7 +116,7 @@
 			
 
 .data	
-	prompter: .asciz "Please enter a positive odd number to draw a star: "
+	prompter: .asciz "\nPlease enter a positive odd number to draw a star: "
 	star: .asciz "*"
 	new_line: .asciz "\n"
 	space: .asciz " "
