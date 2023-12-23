@@ -16,6 +16,9 @@ _main:
 	
 	jal ra, bubble_sort
 	
+	la a0, end_message			# print the final message
+	jal ra ecall_print_str			# call print ecall
+	
 	jal ra, print_array				# prints the array
 
 	jal ra, ecall_exit				# Exit the program
@@ -149,6 +152,7 @@ ecall_get_integer:
 	jalr zero 0(ra) 
 				
 .data
+	end_message: .asciz "Your sorted array: "
 	white_space: .asciz " "
 	next_line: .asciz " \n"
 	prompter: .asciz "How many integers are you going to enter?: "
